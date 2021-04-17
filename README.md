@@ -27,3 +27,6 @@ python run_sap_export.py
 ## Note
 
 Because the config and location reference file has contained the confidentials information, I can't put it here in the reporsitory. I will provide you with the mockup template instead.
+
+## Resources
+- [Manually raising (throwing) an exception in Python](https://stackoverflow.com/questions/2052390/manually-raising-throwing-an-exception-in-python)
