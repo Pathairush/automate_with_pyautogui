@@ -15,7 +15,7 @@ config.read('config.cfg')
 
 import argparse
 
-def check_server_location(sap_server):
+def check_server_location(sap_server, location1, location2):
 
     '''
     This function check that the provided SAP server exists in the destop
@@ -26,7 +26,7 @@ def check_server_location(sap_server):
         if server is None:
             server = pyautogui.locateOnScreen(location2)
             if server is None:
-                raise ValueError(f"Cannot detect {SAP_SERVER} sap server location")
+                raise ValueError(f"Cannot detect {sap_server} sap server location")
     except Exception as e:
         print(e)
         raise 
@@ -70,10 +70,10 @@ def select_sap_server(sap_server, server_location, server_location_default):
     this function select the sap server based on the provided server location reference.
     '''
     try: 
-        server = check_server_location(server_location)
+        server = check_server_location(sap_server, server_location, server_location_default)
         while server is None:
             time.sleep(3)
-            server = check_server_location(server_location_default)
+            server = check_server_location(sap_server, server_location, server_location_default)
         pyautogui.moveTo(server)
         pyautogui.doubleClick()
         print(f'-- Open SAP {sap_server} server')
@@ -347,7 +347,7 @@ def main():
             print(f'-- {datetime.datetime.now()} - extract report for {key}')
             extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_date, config, sap_server)
         except Exception as e:
-            pritn(e)
+            print(e)
             continue
 
 if __name__ == "__main__":
