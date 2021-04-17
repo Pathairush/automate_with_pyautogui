@@ -6,23 +6,24 @@ Hi everyone :wave: , welcome to `SAP Report Extraction with Pyautogui`. In this 
  
  Thus, we aim to automate this process so that we can have time to do something that is more important.
 
-# Required
+## Required
 1. SAP GUI Logon application
 2. VPN Connection application (if needed)
 
-# How to run this project
+## How to run this project
 
 ```
 python run_sap_export.py
 ```
 
-# Todo
+## Todos
 
 - [ ] Refactor the script to receive a `keyword argument` from terminal
 - [ ] Refactor the code to provide different input parameter for different `DEV`, and `PRD` servers.
 - [ ] Schedule the task with `Apache airflow`
 - [ ] Consolidate the vpn connection, report extraction, and upload to S3 together
+- [ ] Provide mockup files for configuration and location reference
 
-# Notes
+## Note
 
 Because the config and location reference file has contained the confidentials information, I can't put it here in the reporsitory. I will provide you with the mockup template instead.
