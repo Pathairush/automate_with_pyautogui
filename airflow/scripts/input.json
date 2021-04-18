@@ -1,0 +1,12 @@
+{
+    "prop1" : { 
+    "bu_name": "PNG",
+    "comp_code" : "8247",
+    "profit_center" : "1900190019"
+    },
+    "prop2" : { 
+        "bu_name": "AST",
+        "comp_code" : "8247",
+        "profit_center" : "12390812"
+    }
+}
