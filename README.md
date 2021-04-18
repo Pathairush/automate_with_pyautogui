@@ -18,8 +18,9 @@ python run_sap_export.py
 
 ## Todos
 
-- [ ] Refactor the script to receive a `keyword argument` from terminal
-- [ ] Refactor the code to provide different input parameter for different `DEV`, and `PRD` servers.
+- [X] Refactor the script to receive a `keyword argument` from terminal
+- [X] Refactor the code to provide different input parameter for different `DEV`, and `PRD` servers.
+- [X] Add kill process before running the sap report extaction.
 - [ ] Schedule the task with `Apache airflow`
 - [ ] Consolidate the vpn connection, report extraction, and upload to S3 together
 - [ ] Provide mockup files for configuration and location reference
