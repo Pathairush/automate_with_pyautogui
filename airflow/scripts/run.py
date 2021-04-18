@@ -136,7 +136,7 @@ def fill_zfiaraging_form(comp_code, profit_center, aging_date, num_tab_aging_dat
         for i in range(0,3):
             pyautogui.press('tab')
 
-        if str(profit_center) == "nan":
+        if profit_center is None:
             pass
         else:
             pyautogui.typewrite(profit_center)
@@ -247,7 +247,7 @@ def kill_process(process_name):
         print(e)
         raise
             
-def rename_export_file(config, export_date, key, profit_center, sap_server):
+def rename_export_file(config, export_date, bu_name, profit_center, sap_server):
 
     '''
     rename and move export file to target directory for uploading to S3.
@@ -256,7 +256,7 @@ def rename_export_file(config, export_date, key, profit_center, sap_server):
     export_file_name = os.path.join(config['PATH']['LOCAL'], config['FILE']['EXPORT'])
     target_dir = os.path.join(config['PATH']['LOCAL'], export_date)
 
-    file_name = '{}_{}_{}.xlsx'.format(key, profit_center, sap_server)
+    file_name = '{}_{}_{}.xlsx'.format(bu_name, profit_center, sap_server)
     full_path_file = os.path.join(config['PATH']['LOCAL'], export_date, file_name)
     
     try:
@@ -287,11 +287,17 @@ def rename_export_file(config, export_date, key, profit_center, sap_server):
         print(e)
         raise
 
-def extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_date, config, sap_server):
+def extract_zfiaraging_report(bu_name, comp_code, profit_center, aging_date, export_date, config, sap_server):
 
     '''
     running SAP Report Extraction program.
     '''
+
+    if bu_name is None or comp_code is None:
+        raise ValueError('bu name or company code is None, please check the input arguments.')
+
+    print(f'-- SAP SERVER : "{sap_server.upper()}" -- AGING DATE :  {aging_date} -- EXPORT DATE : {export_date}')
+    print(f'-- RUNTIME : {datetime.datetime.now()} - BU NAME : {bu_name} -- COMPANY CODE : {comp_code} -- PROFIT CENTER : {profit_center}')
 
     if sap_server == 'dev':
 
@@ -325,7 +331,7 @@ def extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_
         select_report_layout(report_layout) 
         export_report()
         kill_process('excel.exe')
-        rename_export_file(config, export_date, key, profit_center, sap_server)
+        rename_export_file(config, export_date, bu_name, profit_center, sap_server)
         sap_gui.terminate()
     except Exception as e:
         print(e)
@@ -337,29 +343,27 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--aging_date')
     parser.add_argument('--sap_server')
+    parser.add_argument('--bu_name')
+    parser.add_argument('--comp_code')
+    parser.add_argument('--profit_center')
     args = parser.parse_args()
 
     # assign arguments
     aging_date = args.aging_date if args.aging_date is not None else (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%d.%m.%Y")
     export_date = aging_date.replace('.', '')
     sap_server = args.sap_server if args.sap_server is not None else "dev"
+    bu_name = args.bu_name if args.bu_name is not None else None
+    comp_code = args.comp_code if args.comp_code is not None else None
+    profit_center = args.profit_center if args.profit_center is not None else None
 
     print(f'-- SAP SERVER : "{sap_server.upper()}" -- AGING DATE :  {aging_date} -- EXPORT DATE : {export_date}')
+    print(f'-- RUNTIME : {datetime.datetime.now()} - BU NAME : {bu_name} -- COMPANY CODE : {comp_code} -- PROFIT CENTER : {profit_center}')
 
-    _input = pd.read_csv('../CONFIG_compcode_subcompname.csv', dtype={'profit_center':str})
-    _input = _input[['sub_comp_name', 'comp_code', 'profit_center']]
-    for params in _input.itertuples():
-
-        try:
-            # extract input parameters
-            _, key, comp_code, profit_center = params
-            key, comp_code, profit_center = str(key), str(comp_code), str(profit_center)
-            
-            print(f'-- {datetime.datetime.now()} - extract report for {key}')
-            extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_date, config, sap_server)
-        except Exception as e:
-            print(e)
-            continue
+    try:
+        extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_date, config, sap_server)
+    except Exception as e:
+        print(e)
+        raise
 
 if __name__ == "__main__":
     

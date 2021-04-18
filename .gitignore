@@ -2,3 +2,4 @@
 locations/
 config.cfg
 credentials.csv
+**/__pycache__
