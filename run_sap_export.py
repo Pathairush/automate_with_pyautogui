@@ -54,6 +54,17 @@ def open_sap_gui(config):
     '''
 
     try: 
+
+        if process_exists('saplogon.exe'):
+            # close saplogon before re-open it. to make sure that you will start from the begining page.
+            print("-- sap logon is opened, close it before moving on")
+            kill_process('saplogon.exe')
+
+        if process_exists('excel.exe'):
+            # close any excel file as well, to make sure that only export excel will be openned.
+            print("-- excel is opened, close it before moving on")
+            kill_process('excel.exe')
+
         sap_gui = subprocess.Popen(config['PATH']['SAP_LOGON'])
         print('-- Open SAP GUI')
         time.sleep(5)
