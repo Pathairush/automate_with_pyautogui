@@ -341,7 +341,7 @@ def main():
 
     # assign arguments
     aging_date = args.aging_date if args.aging_date is not None else (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%d.%m.%Y")
-    export_date = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    export_date = "".join(args.aging_date.split('.')[::-1])
     sap_server = args.sap_server if args.sap_server is not None else "dev"
 
     print(f'-- SAP SERVER : "{sap_server.upper()}" -- AGING DATE :  {aging_date} -- EXPORT DATE : {export_date}')
