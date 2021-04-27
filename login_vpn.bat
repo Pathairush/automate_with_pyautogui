@@ -1,0 +1,1 @@
+start /W python "D:\Users\pathairush.s.ASSETWORLDCORP-\OneDrive - assetworldcorp-th.com\2021\Collection\ETL\automate_stuff_with_pyautogui\login_vpn.py" 

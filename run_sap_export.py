@@ -72,7 +72,7 @@ def open_sap_gui(config):
         return sap_gui
 
     except Exception as e:
-        pritn(e)
+        print(e)
         raise
 
 def select_sap_server(sap_server, server_location, server_location_default):
@@ -247,7 +247,7 @@ def kill_process(process_name):
         print(e)
         raise
             
-def rename_export_file(config, export_date, key, profit_center, sap_server):
+def rename_export_file(config, export_date, bu_name, profit_center, sap_server):
 
     '''
     rename and move export file to target directory for uploading to S3.
@@ -256,7 +256,7 @@ def rename_export_file(config, export_date, key, profit_center, sap_server):
     export_file_name = os.path.join(config['PATH']['LOCAL'], config['FILE']['EXPORT'])
     target_dir = os.path.join(config['PATH']['LOCAL'], export_date)
 
-    file_name = '{}_{}_{}.xlsx'.format(key, profit_center, sap_server)
+    file_name = '{}_{}_{}.xlsx'.format(bu_name, profit_center, sap_server)
     full_path_file = os.path.join(config['PATH']['LOCAL'], export_date, file_name)
     
     try:
@@ -287,7 +287,7 @@ def rename_export_file(config, export_date, key, profit_center, sap_server):
         print(e)
         raise
 
-def extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_date, config, sap_server):
+def extract_zfiaraging_report(bu_name, comp_code, profit_center, aging_date, export_date, config, sap_server):
 
     '''
     running SAP Report Extraction program.
@@ -325,7 +325,7 @@ def extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_
         select_report_layout(report_layout) 
         export_report()
         kill_process('excel.exe')
-        rename_export_file(config, export_date, key, profit_center, sap_server)
+        rename_export_file(config, export_date, bu_name, profit_center, sap_server)
         sap_gui.terminate()
     except Exception as e:
         print(e)
@@ -341,7 +341,7 @@ def main():
 
     # assign arguments
     aging_date = args.aging_date if args.aging_date is not None else (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%d.%m.%Y")
-    export_date = aging_date.replace('.', '')
+    export_date = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y%m%d")
     sap_server = args.sap_server if args.sap_server is not None else "dev"
 
     print(f'-- SAP SERVER : "{sap_server.upper()}" -- AGING DATE :  {aging_date} -- EXPORT DATE : {export_date}')
@@ -352,11 +352,11 @@ def main():
 
         try:
             # extract input parameters
-            _, key, comp_code, profit_center = params
-            key, comp_code, profit_center = str(key), str(comp_code), str(profit_center)
-            
-            print(f'-- {datetime.datetime.now()} - extract report for {key}')
-            extract_zfiaraging_report(key, comp_code, profit_center, aging_date, export_date, config, sap_server)
+            _, bu_name, comp_code, profit_center = params
+            bu_name, comp_code, profit_center = str(bu_name), str(comp_code), str(profit_center)
+
+            print(f'-- {datetime.datetime.now()} - extract report for {bu_name}')
+            extract_zfiaraging_report(bu_name, comp_code, profit_center, aging_date, export_date, config, sap_server)
         except Exception as e:
             print(e)
             continue
